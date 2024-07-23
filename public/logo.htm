@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>idNet</title>
+  <base href="/IdNet.Digitalizacao/">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' https://www.gstatic.com/ 'unsafe-inline'; script-src 'self' https://www.google-analytics.com/ https://www.google.com/ https://www.gstatic.com/ https://www.googletagmanager.com/ https://www.googleadservices.com/ https://googleads.g.doubleclick.net/ https://www.google.com.br/ https://www.paypalobjects.com/ https://www.paypal.com/ 'unsafe-inline' 'unsafe-eval'; media-src *; img-src * 'self' data: content: blob:;connect-src *;frame-src * 'self';">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-tap-highlight" content="no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#7D1E1E">
+
+  <style>
+    .splash {
+      background-color: #212121;
+      text-align: center;
+      position: fixed;
+      z-index: 1001;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 100%;
+      width: 100%;
+      display: block;
+    }
+
+    .splash-logo {
+      position: absolute;
+      top: calc(50% - 30px);
+      left: calc(50% - 125px);
+      width: 250px;
+    }
+  </style>
+</head>
+<body>
+  <app-root>
+    <div class="splash">
+      <img src="assets/img/logo-icon.png" class="splash-logo">
+    </div>
+  </app-root>
+<script src="runtime.js"></script><script src="polyfills-es5.js" nomodule></script><script src="polyfills.js"></script><script src="styles.js"></script><script src="scripts.js"></script><script src="vendor.js"></script><script src="main.js"></script></body>
+</html>
