@@ -3,7 +3,9 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { redirect, usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
+import { LoadingContextC, LoadingContext } from "./LoadingContext";
+import { Modal } from "antd";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,7 +27,12 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      
+      <body className={inter.className}>
+        <LoadingContextC>
+          {children}
+        </LoadingContextC>
+        </body>
     </html>
   );
 }
