@@ -21,7 +21,7 @@ function EmAtendimento() {
 
   useEffect(() => {
     setRefresh(true);
-    setIsLoading(true);
+    // setIsLoading(true);
     api
       .get("/atendimento/user", {
         headers: {
@@ -35,7 +35,7 @@ function EmAtendimento() {
         console.log(error);
       })
       .finally(() => {
-        setIsLoading(false);
+        // setIsLoading(false);
       });
   }, [refresh]);
 
@@ -45,8 +45,8 @@ function EmAtendimento() {
         key: id,
         nome: requerente.nome,
         via,
-        createdAt: moment(createdAt).format('DD/MM/YYYY hh:mm:ss'),
-        solicitante: usuario!.nome,
+        createdAt: moment(createdAt).format('DD/MM/YYYY hh:mm:ss A'),
+        solicitante: requerente.usuario!.nome,
       };
     }
   );
@@ -84,6 +84,7 @@ function EmAtendimento() {
       title: "Inicio",
       dataIndex: "createdAt",
       key: "inserido",
+      sortOrder:"ascend"
     },
     {
       title: "Solicitante",

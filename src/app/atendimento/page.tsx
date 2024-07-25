@@ -8,7 +8,7 @@ import AtendidosHoje from "./components/AtendidosHoje";
 import { api } from "../api";
 
 
-const App = () => {
+const Atendimento = () => {
   const [atendidosHoje, setAtendidosHoje] = useState([]);
 
   useEffect(() => {
@@ -71,4 +71,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default Atendimento;

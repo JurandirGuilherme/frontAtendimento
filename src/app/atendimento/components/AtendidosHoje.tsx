@@ -5,6 +5,7 @@ import type { TableProps } from "antd";
 import { api } from "@/app/api"
 import { ApiContext } from "../ApiContext";
 import moment from "moment";
+import { LoadingContext } from "@/app/LoadingContext";
 
 
 interface DataType {
@@ -16,6 +17,7 @@ interface DataType {
 }
 function AtendidosHoje() {
   const [AtendidosHoje, setAtendidosHoje] = useState([]);
+  const {messageApi} = useContext(LoadingContext)
   const {refresh} = useContext(ApiContext)
 
 
@@ -30,15 +32,15 @@ function AtendidosHoje() {
         setAtendidosHoje(data);
       })
       .catch((error) => {
-        console.log(error);
+        messageApi.error(error!.response.data)
       });
   }, [refresh]);
 
 
   const data = AtendidosHoje.map(
     ({ id, requerente, via, inicio, fim, createdAt, usuario }) => {
-      const dtInicio = moment(inicio).format('DD/MM/YYYY hh:mm:ss')
-      const dtFim = moment(fim).format('DD/MM/YYYY hh:mm:ss')
+      const dtInicio = moment(inicio).format('DD/MM/YYYY hh:mm:ss A')
+      const dtFim = moment(fim).format('DD/MM/YYYY hh:mm:ss A')
       const dtInicioM = moment(inicio).format('LTS')
       const dtFimM = moment(fim).format('LTS')
 
@@ -50,7 +52,7 @@ function AtendidosHoje() {
         fim: dtFim,
         duracao:  `${moment.duration(moment(dtFimM, 'LTS').diff(moment(dtInicioM, 'LTS'))).asMinutes().toFixed()} minuto(s)`,
         createdAt,
-        solicitante: usuario!.nome,
+        solicitante: requerente.usuario!.nome,
       };
     }
   );

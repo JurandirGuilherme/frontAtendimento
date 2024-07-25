@@ -13,20 +13,6 @@ const { Header, Content, Footer, Sider } = Layout;
 
 type MenuItem = Required<MenuProps>["items"][number];
 
-function getItem(
-  label: React.ReactNode,
-  key: React.Key,
-  icon?: React.ReactNode,
-  children?: MenuItem[]
-): MenuItem {
-  return {
-    key,
-    icon,
-    children,
-    label,
-  } as MenuItem;
-}
-
 const App = ({
   children,
 }: Readonly<{
@@ -54,12 +40,17 @@ const App = ({
   const items: MenuItem[] = [
     {
       key: "1",
-      label: <Link href={"/dashboard"}>Cadastro</Link>,
+      label: <Link href={"/fila"}>Cadastro</Link>,
       icon: <IdcardOutlined />,
     },
     {
       key: "2",
-      label: <Link href={"/dashboard/atendidos"}>Atendidos</Link>,
+      label: <Link href={"/fila/atendidos"}>Atendidos</Link>,
+      icon: <UserOutlined />,
+    },
+    {
+      key: "3",
+      label: <Link href={"/fila/atender"}>Atendidos</Link>,
       icon: <UserOutlined />,
     },
   ];

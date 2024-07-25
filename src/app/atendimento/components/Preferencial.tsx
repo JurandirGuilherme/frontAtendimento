@@ -14,6 +14,8 @@ interface DataType {
   
   function Preferencial() {
     const {refresh, setRefresh} = useContext(ApiContext)
+    const [preferencial, setPreferencial] = useState([]);
+
     const handleAtender = (id: string) => {
       setRefresh(!refresh)
       api
@@ -36,8 +38,6 @@ interface DataType {
         });
     };
     
-    
-    const [preferencial, setPreferencial] = useState([]);
     useEffect(() => {
         api
           .get("/requerente/preferencial")
@@ -54,7 +54,7 @@ interface DataType {
               key: id,
               nome,
               via,
-              createdAt: moment(createdAt).format('DD/MM/YYYY hh:mm:ss'),
+              createdAt: moment(createdAt).format('DD/MM/YYYY hh:mm:ss A'),
               solicitante: usuario!.nome,
             };
           });
@@ -85,18 +85,20 @@ interface DataType {
             {
               title: "Ação",
               key: "action",
-              render: (_, record) => (
+              render: (_, record) => {
+                if(data[0] != record) return(<></>)
+                return (
                 <Space size="middle">
                   <button
                     onClick={() => {
                       handleAtender(record.key);
                     }}
-                    className="bg-red-700 text-white p-1 rounded-md shadow shadow-md"
+                    className="bg-red-700 text-white p-1 rounded-md shadow-md"
                   >
                     Atender
                   </button>
                 </Space>
-              ),
+              )},
             },
           ];
 

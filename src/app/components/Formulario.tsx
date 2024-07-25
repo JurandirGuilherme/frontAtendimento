@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Button, Checkbox, Form, Input } from "antd";
 import { api } from "../api";
+import { LoadingContext } from "../LoadingContext";
 
 const formItemLayout = {
   labelCol: { span: 4 },
@@ -35,6 +36,7 @@ const Formulario: React.FC = () => {
     setNovaCin(e.target.checked);
   };
 
+  const {messageApi} = useContext(LoadingContext);
   const onCheck = async () => {
     const token = sessionStorage.getItem("token");
     try {
@@ -46,7 +48,7 @@ const Formulario: React.FC = () => {
           {
             nome: values.nome,
             preferencial,
-            via: 1,
+            via: values.via,
             novaCin,
           },
           {
@@ -56,6 +58,7 @@ const Formulario: React.FC = () => {
           }
         )
         .then((data) => {
+          messageApi.success('Requerente enviado para fila.')
           form.resetFields();
           setPreferencial(false);
           setNovaCin(false);
@@ -66,6 +69,7 @@ const Formulario: React.FC = () => {
         });
     } catch (errorInfo) {
       console.log("Failed:", errorInfo);
+      messageApi.error("Erro Inesperado.")
     }
   };
 

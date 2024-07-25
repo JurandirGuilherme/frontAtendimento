@@ -5,6 +5,8 @@ import type { TableProps } from "antd";
 import { api } from "@/app/api"
 import { ApiContext } from "../ApiContext";
 import moment from "moment";
+import 'moment/dist/locale/pt-br'
+
 
 interface DataType {
     key: string;
@@ -51,11 +53,12 @@ function Geral() {
           };
 
         const data = geral.map(({ id, nome, via, createdAt, usuario }) => {
+
             return {
               key: id,
               nome,
               via,
-              createdAt: moment(createdAt).format('DD/MM/YYYY hh:mm:ss'),
+              createdAt: moment(createdAt).locale('pt-br').format('DD/MM/YYYY hh:mm:ss A'),
               solicitante: usuario!.nome,
             };
           });
@@ -77,6 +80,7 @@ function Geral() {
               title: "Inserido",
               dataIndex: "createdAt",
               key: "inserido",
+              sorter: (a, b) => console.log(moment(a.createdAt)- moment(b.createdAt))
             },
             {
               title: "Solicitante",
@@ -86,7 +90,9 @@ function Geral() {
             {
               title: "Ação",
               key: "action",
-              render: (_, record) => (
+              render: (_, record) => {
+                if (data[0] != record) return (<></>)
+                return(
                 <Space size="middle">
                   <button
                     onClick={() => {
@@ -97,13 +103,15 @@ function Geral() {
                     Atender
                   </button>
                 </Space>
-              ),
+              )},
             },
           ];
 
+          const [headert, setHeardrt] = useState();
+
   return (
     <div>        
-    <Table columns={columns} dataSource={data} />
+    <Table columns={columns}  dataSource={data} />
     </div>
   )
 }

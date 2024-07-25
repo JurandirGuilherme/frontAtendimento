@@ -11,7 +11,7 @@ function Login() {
   const [senha, setSenha] = useState("");
   const router = useRouter();
 
-  const { setIsLoading } = useContext(LoadingContext);
+  const { setIsLoading, messageApi } = useContext(LoadingContext);
 
   const handleSubmit = (e: FormEvent) => {
     setIsLoading(true);
@@ -25,14 +25,14 @@ function Login() {
         sessionStorage.setItem("cargo", data.cargos[0].id )
         switch(data.cargos[0].id){
           case 1 || 2:
-            router.push("/dashboard");
+            router.push("/fila");
             break;
           case 3:
             router.push('/atendimento')
         }
       })
       .catch((error: unknown) => {
-        console.log(error);
+        messageApi.error(error!.response.data)
       })
       .finally(() => {
         setIsLoading(false);
