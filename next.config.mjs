@@ -2,6 +2,7 @@
 const nextConfig = {
     output: 'export',
     eslint: {
+        trailingSlash: true,
         ignoreDuringBuilds: true,
       },
       typescript: {

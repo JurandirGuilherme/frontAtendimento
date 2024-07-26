@@ -1,7 +1,7 @@
 
 .bg{
     background: no-repeat center left;
-    background-image: url(../../../public/wallpaper.jpg);
+    background-image: url(../../../public/wallpaper.png);
     background-size: cover;
     background-size: calc(102%) ;
 }

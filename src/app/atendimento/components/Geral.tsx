@@ -80,7 +80,6 @@ function Geral() {
               title: "Inserido",
               dataIndex: "createdAt",
               key: "inserido",
-              sorter: (a, b) => console.log(moment(a.createdAt)- moment(b.createdAt))
             },
             {
               title: "Solicitante",

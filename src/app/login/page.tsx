@@ -13,13 +13,15 @@ function Login() {
 
   const { setIsLoading, messageApi } = useContext(LoadingContext);
 
+  useEffect(()=>{
+    sessionStorage.clear();
+  },[])
   const handleSubmit = (e: FormEvent) => {
     setIsLoading(true);
     e.preventDefault();
     api
       .post("/user/login", { usuario, senha })
       .then(({ data }) => {
-        sessionStorage.clear();
         sessionStorage.setItem("token", data.token);
         sessionStorage.setItem("nome", data.nome);
         sessionStorage.setItem("cargo", data.cargos[0].id )
@@ -31,8 +33,9 @@ function Login() {
             router.push('/atendimento')
         }
       })
-      .catch((error: unknown) => {
-        messageApi.error(error!.response.data)
+      .catch((error) => {
+        console.log(error)
+        messageApi.error(error.response.data)
       })
       .finally(() => {
         setIsLoading(false);

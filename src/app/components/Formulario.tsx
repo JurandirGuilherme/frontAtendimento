@@ -118,7 +118,7 @@ const Formulario: React.FC = () => {
           </Checkbox>
         </Form.Item>
         <Form.Item>
-          <Button type="primary" onClick={onCheck}>
+          <Button type="primary" style={{backgroundColor: 'rgb(127 29 29 / var(--tw-bg-opacity))'}} onClick={onCheck}>
             Enviar
           </Button>
         </Form.Item>

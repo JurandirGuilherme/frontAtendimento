@@ -10,6 +10,12 @@
   .ant-menu-item-selected{
     background-color: #821a1a !important;
   }
+  .ant-table-column-sorter-up.active{
+    color: #450a0a !important;
+  }
+  .ant-table-column-sorter-down.active{
+    color: #450a0a !important;
+  }
 }
 /* :global {
  } */
