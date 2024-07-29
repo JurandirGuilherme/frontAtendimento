@@ -52,12 +52,12 @@ function Geral() {
               });
           };
 
-        const data = geral.map(({ id, nome, via, createdAt, usuario }) => {
-
+        const data = geral.map(({ id, nome, via, createdAt, usuario, cin }) => {
             return {
               key: id,
               nome,
               via,
+              cin,
               createdAt: moment(createdAt).locale('pt-br').format('DD/MM/YYYY hh:mm:ss A'),
               solicitante: usuario!.nome,
             };
@@ -85,6 +85,25 @@ function Geral() {
               title: "Solicitante",
               dataIndex: "solicitante",
               key: "solicitante",
+            },
+            {
+              title: "CIN",
+              dataIndex: "cin",
+              key: "cin",
+              render: (_, {cin}) =>{
+                if (cin) return(
+                  <>
+                  <Tag color="green">
+                  CIN
+                  </Tag>
+                  </>
+                )
+                return(
+                <>
+
+                </>
+                )
+              }
             },
             {
               title: "Ação",

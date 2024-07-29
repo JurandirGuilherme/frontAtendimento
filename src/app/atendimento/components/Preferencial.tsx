@@ -49,11 +49,12 @@ interface DataType {
           });
         },[refresh])
 
-        const data = preferencial.map(({ id, nome, via, createdAt, usuario }) => {
+        const data = preferencial.map(({ id, nome, via, createdAt, usuario,cin }) => {
             return {
               key: id,
               nome,
               via,
+              cin,
               createdAt: moment(createdAt).format('DD/MM/YYYY hh:mm:ss A'),
               solicitante: usuario!.nome,
             };
@@ -81,6 +82,25 @@ interface DataType {
               title: "Solicitante",
               dataIndex: "solicitante",
               key: "solicitante",
+            },
+            {
+              title: "CIN",
+              dataIndex: "cin",
+              key: "cin",
+              render: (_, {cin}) =>{
+                if (cin) return(
+                  <>
+                  <Tag color="green">
+                  CIN
+                  </Tag>
+                  </>
+                )
+                return(
+                <>
+
+                </>
+                )
+              }
             },
             {
               title: "Ação",

@@ -49,7 +49,7 @@ const Formulario: React.FC = () => {
             nome: values.nome,
             preferencial,
             via: values.via,
-            novaCin,
+            cin: novaCin,
           },
           {
             headers: {

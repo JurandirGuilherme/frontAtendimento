@@ -1,56 +1,29 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import Atendimento from "@/app/atendimento/page";
-import { api } from "@/app/api";
-import { Table, TableProps } from "antd";
+import React from "react";
+import Atendentes from "./components/Atendentes";
+import Solicitantes from "./components/Solicitantes";
+import Fila from "./components/Fila";
 
-interface DataType {
-  nome: string;
-  atendidos: number
-}
-
-const columns: TableProps<DataType>["columns"] = [
-  {
-    key: "nome",
-    title: "Operador",
-    dataIndex: "nome",
-  },
-  {
-    key: "atendidos",
-    title: "Atendimentos",
-    dataIndex: "atendidos",
-    sorter: (a, b) => a.atendidos - b.atendidos,
-    defaultSortOrder:'descend'
-  },
-];
-
-function Dashboard() {
-  const [dataApi, setDataApi] = useState([]);
-
-  useEffect(() => {
-    api
-      .get("/user/atendimentos")
-      .then(({ data }) => {
-        setDataApi(data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-
-  const data = dataApi.map(({ nome, atendidos }) => {
-    return {
-      key: nome,
-      nome,
-      atendidos,
-    };
-  });
-
+function page() {
   return (
     <>
-      <Table columns={columns} dataSource={data}></Table>
+      <main className="flex flex-col space-y-7">
+        <div className=" flex  flex-col justify-center items-center space-y-2">
+          <h1>Fila</h1>
+          <Fila />
+        </div>
+        <div className="flex space-x-7 ">
+          <div className=" flex  flex-col justify-center items-center space-y-2">
+            <h1>Atendimento</h1>
+            <Atendentes />
+          </div>
+          <div className=" flex  flex-col justify-center items-center space-y-2">
+            <h1>Solicitantes</h1>
+            <Solicitantes />
+          </div>
+        </div>
+      </main>
     </>
   );
 }
 
-export default Dashboard;
+export default page;

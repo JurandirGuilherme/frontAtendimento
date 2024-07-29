@@ -45,6 +45,7 @@ function EmAtendimento() {
         key: id,
         nome: requerente.nome,
         via,
+        cin: requerente.cin,
         createdAt: moment(createdAt).format('DD/MM/YYYY hh:mm:ss A'),
         solicitante: requerente.usuario!.nome,
       };
@@ -90,6 +91,26 @@ function EmAtendimento() {
       title: "Solicitante",
       dataIndex: "solicitante",
       key: "solicitante",
+    },
+    {
+      title: "CIN",
+      dataIndex: "cin",
+      key: "cin",
+      render: (_, {cin}) =>{
+        console.log(cin)
+        if (cin) return(
+          <>
+          <Tag color="green">
+          CIN
+          </Tag>
+          </>
+        )
+        return(
+        <>
+
+        </>
+        )
+      }
     },
     {
       title: "Ação",
