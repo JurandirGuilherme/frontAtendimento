@@ -6,6 +6,7 @@ import EmAtendimento from "./components/EmAtendimento";
 import Geral from "./components/Geral";
 import AtendidosHoje from "./components/AtendidosHoje";
 import { api } from "../api";
+import Prioridade from "./components/Prioridade";
 
 
 const Atendimento = () => {
@@ -62,8 +63,8 @@ const Atendimento = () => {
 
         </div>
         <div>
-          <h1 className="w-full text-center p-2">Atendidos Hoje</h1>
-          <AtendidosHoje  />
+          <h1 className="w-full text-center p-2">Prioridade Legal</h1>
+          <Prioridade/>
         </div>
       </div>
       </main>

@@ -48,16 +48,15 @@ function Solicitantes() {
       .get("/user/solicitantes")
       .then(({ data }) => {
         setDataApi(data);
-        console.log(data)
       })
       .catch((error) => {
         console.log(error);
       });
   }, []);
 
-  const data = dataApi.map(({ nome, total, preferencial, geral }) => {
+  const data = dataApi.map(({ nome, total, preferencial, geral, id }) => {
     return {
-      key: nome,
+      key: id,
       nome,
       preferencial,
       geral,

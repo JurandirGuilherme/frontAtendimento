@@ -16,6 +16,8 @@ const formTailLayout = {
 const Formulario: React.FC = () => {
   const [form] = Form.useForm();
   const [preferencial, setPreferencial] = useState(false);
+  const [prioridadelei, setPrioridadelei] = useState(false);
+
   const [novaCin, setNovaCin] = useState(false);
   const [cargo, setCargo] = useState(0);
 
@@ -30,6 +32,8 @@ const Formulario: React.FC = () => {
 
   const onCheckboxChange = (e: { target: { checked: boolean } }) => {
     setPreferencial(e.target.checked);
+    setPrioridadelei(false)
+    
   };
 
   const onCheckboxCin = (e: { target: { checked: boolean } }) => {
@@ -50,6 +54,7 @@ const Formulario: React.FC = () => {
             preferencial,
             via: values.via,
             cin: novaCin,
+            prioridadelei
           },
           {
             headers: {
@@ -61,6 +66,7 @@ const Formulario: React.FC = () => {
           messageApi.success('Requerente enviado para fila.')
           form.resetFields();
           setPreferencial(false);
+          setPrioridadelei(false);
           setNovaCin(false);
           console.log(data);
         })
@@ -104,6 +110,11 @@ const Formulario: React.FC = () => {
         >
           <Input type="number" placeholder="Via do Requerente" />
         </Form.Item>
+        <Form.Item>
+            <Checkbox checked={prioridadelei} onChange={(e)=>{setPrioridadelei(e.target.checked), setPreferencial(false)}}>
+              Prioridade Legal
+            </Checkbox>
+          </Form.Item>
         {cargo == 1 && (
           <Form.Item>
             <Checkbox checked={preferencial} onChange={onCheckboxChange}>
@@ -111,6 +122,7 @@ const Formulario: React.FC = () => {
             </Checkbox>
           </Form.Item>
         )}
+    
 
         <Form.Item>
           <Checkbox checked={novaCin} onChange={onCheckboxCin}>

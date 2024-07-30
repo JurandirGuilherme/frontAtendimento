@@ -11,7 +11,6 @@ function Page() {
     const token = sessionStorage.getItem('token')
     api.get('/user/id', {headers: {Authorization: token}})
     .then(({data})=>{
-      console.log(data.nome)
       setNome(data.nome)
     })
   },[])

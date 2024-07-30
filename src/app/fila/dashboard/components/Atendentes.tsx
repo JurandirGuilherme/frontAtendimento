@@ -48,16 +48,15 @@ function Atendentes() {
       .get("/user/atendimentos")
       .then(({ data }) => {
         setDataApi(data);
-        console.log(data)
       })
       .catch((error) => {
         console.log(error);
       });
   }, []);
 
-  const data = dataApi.map(({ nome, atendidos, preferencial, geral }) => {
+  const data = dataApi.map(({ nome, atendidos, preferencial, geral, id }) => {
     return {
-      key: nome,
+      key: id,
       nome,
       preferencial,
       geral,
