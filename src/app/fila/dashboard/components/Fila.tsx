@@ -2,7 +2,6 @@
 import { api } from '@/app/api'
 import { Table, TableProps } from 'antd'
 import React, { useContext, useEffect, useState } from 'react'
-import { createContext } from 'vm'
 import { DateContext } from '../dateContext'
 
 function Fila() {
@@ -22,14 +21,19 @@ function Fila() {
 
     const column: TableProps["columns"] = [
         {
+            key:'geral',
+            title:'Geral',
+            dataIndex: 'geral'
+        },
+        {
             key:'preferencial',
             title:'Preferencial',
             dataIndex: 'preferencial'
         },
         {
-            key:'geral',
-            title:'Geral',
-            dataIndex: 'geral'
+            key:'prioridade',
+            title:'Prioridade',
+            dataIndex: 'prioridade'
         },
         {
             key:'total',

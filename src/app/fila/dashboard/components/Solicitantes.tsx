@@ -9,6 +9,7 @@ interface DataType {
   total: number
   preferencial: number
   geral: number
+  prioridade: number
 }
 
 const columns: TableProps<DataType>["columns"] = [
@@ -29,6 +30,13 @@ const columns: TableProps<DataType>["columns"] = [
     title: "Preferencial",
     dataIndex: "preferencial",
     sorter: (a, b) => a.preferencial - b.preferencial,
+    
+  },
+  {
+    key: "prioridade",
+    title: "Prioridade",
+    dataIndex: "prioridade",
+    sorter: (a, b) => a.prioridade - b.prioridade,
     
   },
   {
@@ -54,13 +62,14 @@ function Solicitantes() {
       });
   }, []);
 
-  const data = dataApi.map(({ nome, total, preferencial, geral, id }) => {
+  const data = dataApi.map(({ nome, total, preferencial, geral, id, prioridade }) => {
     return {
       key: id,
       nome,
       preferencial,
       geral,
       total,
+      prioridade
     };
   });
 
