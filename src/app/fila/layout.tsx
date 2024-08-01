@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { BarChartOutlined, IdcardOutlined, TeamOutlined, UserOutlined } from "@ant-design/icons";
+import { BarChartOutlined, IdcardOutlined, PrinterOutlined, TeamOutlined, UserOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Dropdown, Layout, Menu, Space, theme } from "antd";
 import Image from "next/image";
@@ -52,6 +52,11 @@ const App = ({
       key: "3",
       label: <Link href={"/fila/dashboard"}>Dashboard</Link>,
       icon: <BarChartOutlined />,
+    },
+    {
+      key: "4",
+      label: <Link href={"/fila/impressao"}>Impressão</Link>,
+      icon: <PrinterOutlined />,
     },
   ];
 

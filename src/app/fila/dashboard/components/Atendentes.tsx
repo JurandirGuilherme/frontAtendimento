@@ -1,8 +1,8 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import Atendimento from "@/app/atendimento/page";
+import React, { useContext, useEffect, useState } from "react";
 import { api } from "@/app/api";
 import { Table, TableProps } from "antd";
+import { DateContext } from "../dateContext";
 
 interface DataType {
   nome: string;
@@ -50,17 +50,18 @@ const columns: TableProps<DataType>["columns"] = [
 
 function Atendentes() {
   const [dataApi, setDataApi] = useState([]);
-
-  useEffect(() => {
-    api
-      .get("/user/atendimentos")
-      .then(({ data }) => {
-        setDataApi(data);
+  
+  const {startDate, endDate} = useContext(DateContext);
+  useEffect(()=>{
+      api.post('/user/atendimentos',{
+          'inicioDt': startDate,
+          'fimDt': endDate
+      }).then(({data})=>{
+        setDataApi(data)
+      }).catch((error)=>{
+          console.log(error)
       })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+  },[endDate])
 
   const data = dataApi.map(({ nome, atendidos, preferencial, geral, id, prioridade }) => {
     return {
