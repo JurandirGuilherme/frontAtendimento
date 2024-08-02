@@ -3,7 +3,7 @@ import React, { use, useContext, useEffect, useState } from "react";
 import { Space, Table, Tag } from "antd";
 import type { TableProps } from "antd";
 import { api } from "@/app/api"
-import { ApiContext } from "../ApiContext";
+import { ApiContext } from "@/app/ApiContext";
 import moment from "moment";
 
 interface DataType {

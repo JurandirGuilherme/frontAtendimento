@@ -2,7 +2,6 @@
 import React, { FormEvent, useContext, useEffect, useState } from "react";
 import styles from "./styles.module.css";
 import { api } from "../api";
-import { redirect } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { LoadingContext } from "../LoadingContext";
 
@@ -24,10 +23,13 @@ function Login() {
       .then(({ data }) => {
         sessionStorage.setItem("token", data.token);
         sessionStorage.setItem("nome", data.nome);
-        sessionStorage.setItem("cargo", data.cargos[0].id )
+        sessionStorage.setItem("cargo", JSON.stringify(data.cargos))
         switch(data.cargos[0].id){
           case 1 || 2:
             router.push("/fila");
+            break;
+          case 4:
+            router.push('/fila/prioridade')
             break;
           case 3:
             router.push('/atendimento')

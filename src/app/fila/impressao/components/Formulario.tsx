@@ -15,41 +15,26 @@ const formTailLayout = {
 
 const Formulario: React.FC = () => {
   const [form] = Form.useForm();
-  const [preferencial, setPreferencial] = useState(false);
-  const [prioridadelei, setPrioridadelei] = useState(false);
+  const { messageApi } = useContext(LoadingContext);
+  const [entrega, setEntrega] = useState<number>(1);
 
-  const [novaCin, setNovaCin] = useState(false);
-  const [cargo, setCargo] = useState(0);
 
   useEffect(() => {
     const cargoss = sessionStorage.getItem("cargo");
-    setCargo(Number(cargoss));
   }, []);
 
-  const onCheckboxChange = (e: { target: { checked: boolean } }) => {
-    setPreferencial(e.target.checked);
-    setPrioridadelei(false);
-  };
 
-  const onCheckboxCin = (e: { target: { checked: boolean } }) => {
-    setNovaCin(e.target.checked);
-  };
-
-  const { messageApi } = useContext(LoadingContext);
   const onCheck = async () => {
     const token = sessionStorage.getItem("token");
     try {
       const values = await form.validateFields();
-      console.log("Success:", values, preferencial);
+      console.log("Success:", values);
       api
         .post(
-          "/requerente",
+          "/pedido",
           {
-            nome: values.nome,
-            preferencial,
-            via: values.via,
-            cin: novaCin,
-            prioridadelei,
+            pedido: values.pedido,
+            entrega: entrega
           },
           {
             headers: {
@@ -60,13 +45,12 @@ const Formulario: React.FC = () => {
         .then((data) => {
           messageApi.success("Requerente enviado para fila.");
           form.resetFields();
-          setPreferencial(false);
-          setPrioridadelei(false);
-          setNovaCin(false);
+         
           console.log(data);
         })
         .catch((error) => {
           console.log(error);
+          messageApi.error(error.response.data.msg)
         });
     } catch (errorInfo) {
       console.log("Failed:", errorInfo);
@@ -98,7 +82,8 @@ const Formulario: React.FC = () => {
    
         <Form.Item name="entrega" label="Entrega" >
           <Select
-            defaultValue={1}
+            defaultValue={entrega}
+            onChange={(value)=>{setEntrega(value)}}
             options={[
               { value: 1, label: "Posto Destino" },
               { value: 2, label: "Permanência" },

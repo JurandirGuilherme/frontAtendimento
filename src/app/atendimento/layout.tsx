@@ -16,7 +16,7 @@ import logo from "../../../public/logo_idnet_white.svg";
 import { redirect, usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ApiContextC } from "./ApiContext";
+import { ApiContextC } from "../ApiContext";
 const { Header, Content, Footer, Sider } = Layout;
 
 type MenuItem = Required<MenuProps>["items"][number];
@@ -45,7 +45,6 @@ const App = ({
   const [menuSelect,setMenuSelect] = useState('')
   const router = useRouter();
   const pathname = usePathname();
-  const [refresh, setRefresh] = useState(false);
 
 const items: MenuItem[] = [
   {
@@ -111,7 +110,7 @@ useEffect(()=>{
       <Layout>
         
         <Content style={{ margin: "0 16px" }}>
-          <div className="mt-12 ml-2 flex justify-center"><ApiContextC>{children}</ApiContextC></div>
+          <div className="mt-12 ml-2 flex justify-center">{children}</div>
         </Content>
       </Layout>
       <Footer

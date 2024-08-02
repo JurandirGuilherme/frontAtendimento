@@ -21,13 +21,15 @@ const App = ({
   const [collapsed, setCollapsed] = useState(false);
   const [nome, setNome] = useState("");
   const [menuSelect, setMenuSelect] = useState("");
+  const [cargo, setCargo] = useState<object[]>(JSON.parse(sessionStorage.getItem('cargo')!))
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
     const username = sessionStorage.getItem("nome");
+    // setCargo(JSON.parse(sessionStorage.getItem('cargo')!))
     setNome(username!);
-  });
+  },[]);
 
   useEffect(() => {
     items.map((data) => {
@@ -37,8 +39,12 @@ const App = ({
     });
   }, [pathname]);
 
-  const items: MenuItem[] = [
-    {
+  const items = [];
+  
+  if (cargo.some((e)=>{
+    return e.id == 1
+   })){
+    items.push({
       key: "1",
       label: <Link href={"/fila"}>Cadastro</Link>,
       icon: <IdcardOutlined />,
@@ -54,12 +60,34 @@ const App = ({
       icon: <BarChartOutlined />,
     },
     {
-      key: "4",
+      key: "5",
       label: <Link href={"/fila/impressao"}>Impressão</Link>,
       icon: <PrinterOutlined />,
-    },
-  ];
+    })
+   }
+  if (cargo.some((e)=>{
+    return e.id == 4
+   })) {
+     items.push({
+       key: "6",
+       label: <Link href={"/fila/prioridade"}>Prioridade</Link>,
+       icon: <PrinterOutlined />,
+     })
+    }
 
+  useEffect(()=>{
+    console.log(cargo)
+    if (cargo.some((e)=>{
+     return e.id == 4
+    })) {
+      items.push({
+        key: "5",
+        label: <Link href={"/fila/prioridade"}>Prioridade</Link>,
+        icon: <PrinterOutlined />,
+      })
+      console.log(items)
+    }
+  },[items])
 
 
   const profileItems = [

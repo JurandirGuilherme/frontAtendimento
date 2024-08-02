@@ -6,6 +6,7 @@ import { redirect, usePathname } from "next/navigation";
 import { useContext, useEffect } from "react";
 import { LoadingContextC, LoadingContext } from "./LoadingContext";
 import { Modal } from "antd";
+import { ApiContext, ApiContextC } from "./ApiContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,7 +31,9 @@ export default function RootLayout({
       
       <body className={inter.className}>
         <LoadingContextC>
-          {children}
+          <ApiContextC>
+            {children}
+          </ApiContextC>
         </LoadingContextC>
         </body>
     </html>
