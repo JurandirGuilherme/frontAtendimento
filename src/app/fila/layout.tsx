@@ -1,6 +1,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { BarChartOutlined, IdcardOutlined, PrinterOutlined, TeamOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  BarChartOutlined,
+  IdcardOutlined,
+  PrinterOutlined,
+  TeamOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Dropdown, Layout, Menu, Space, theme } from "antd";
 import Image from "next/image";
@@ -21,16 +27,17 @@ const App = ({
   const [collapsed, setCollapsed] = useState(false);
   const [nome, setNome] = useState("");
   const [menuSelect, setMenuSelect] = useState("");
-  const [cargo, setCargo] = useState<object[]>(JSON.parse(sessionStorage.getItem('cargo')!))
+  const [cargo, setCargo] = useState<object[]>([]);
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
     const username = sessionStorage.getItem("nome");
-    // setCargo(JSON.parse(sessionStorage.getItem('cargo')!))
+    setCargo(JSON.parse(sessionStorage.getItem("cargo")!));
     setNome(username!);
-  },[]);
+  }, []);
 
+  const items = [];
   useEffect(() => {
     items.map((data) => {
       if (data!.label!.props.href == pathname) {
@@ -39,56 +46,78 @@ const App = ({
     });
   }, [pathname]);
 
-  const items = [];
-  
-  if (cargo.some((e)=>{
-    return e.id == 1
-   })){
-    items.push({
-      key: "1",
-      label: <Link href={"/fila"}>Cadastro</Link>,
-      icon: <IdcardOutlined />,
-    },
-    {
-      key: "2",
-      label: <Link href={"/fila/atendidos"}>Atendidos</Link>,
-      icon: <UserOutlined />,
-    },
-    {
-      key: "3",
-      label: <Link href={"/fila/dashboard"}>Dashboard</Link>,
-      icon: <BarChartOutlined />,
-    },
-    {
-      key: "5",
-      label: <Link href={"/fila/impressao"}>Impressão</Link>,
-      icon: <PrinterOutlined />,
+  if (
+    cargo.some((e) => {
+      return e.id == 1;
     })
-   }
-  if (cargo.some((e)=>{
-    return e.id == 4
-   })) {
-     items.push({
-       key: "6",
-       label: <Link href={"/fila/prioridade"}>Prioridade</Link>,
-       icon: <PrinterOutlined />,
-     })
-    }
-
-  useEffect(()=>{
-    console.log(cargo)
-    if (cargo.some((e)=>{
-     return e.id == 4
-    })) {
-      items.push({
+  ) {
+    items.push(
+      {
+        key: "1",
+        label: <Link href={"/fila"}>Cadastro</Link>,
+        icon: <IdcardOutlined />,
+      },
+      {
+        key: "2",
+        label: <Link href={"/fila/atendidos"}>Atendidos</Link>,
+        icon: <UserOutlined />,
+      },
+      {
+        key: "3",
+        label: <Link href={"/fila/dashboard"}>Dashboard</Link>,
+        icon: <BarChartOutlined />,
+      },
+      {
         key: "5",
-        label: <Link href={"/fila/prioridade"}>Prioridade</Link>,
+        label: <Link href={"/fila/impressao"}>Impressão</Link>,
         icon: <PrinterOutlined />,
-      })
-      console.log(items)
-    }
-  },[items])
+      },
+      {
+        key: "7",
+        label: <Link href={"/fila/andamento"}>Andamento</Link>,
+        icon: <PrinterOutlined />,
+      }
+    );
+  }
+  if (
+    cargo.some((e) => {
+      return e.id == 4;
+    })
+  ) {
+    items.push({
+      key: "6",
+      label: <Link href={"/fila/prioridade"}>Prioridade</Link>,
+      icon: <PrinterOutlined />,
+    },
+    {
+      key: "9",
+      label: <Link href={"/fila/historico"}>Histórico</Link>,
+      icon: <PrinterOutlined />,
+    });
+  }
 
+  // useEffect(() => {
+  //   console.log(cargo);
+  //   if (
+  //     cargo.some((e) => {
+  //       return e.id == 4;
+  //     })
+  //   ) {
+  //     items.push(
+  //       {
+  //         key: "5",
+  //         label: <Link href={"/fila/prioridade"}>Prioridade</Link>,
+  //         icon: <PrinterOutlined />,
+  //       },
+  //       {
+  //         key: "9",
+  //         label: <Link href={"/fila/historico"}>Historico</Link>,
+  //         icon: <PrinterOutlined />,
+  //       }
+  //     );
+  //     console.log(items);
+  //   }
+  // }, [items]);
 
   const profileItems = [
     {
@@ -106,7 +135,6 @@ const App = ({
     },
   ];
 
-  
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();

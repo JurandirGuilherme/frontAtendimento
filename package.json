@@ -15,13 +15,15 @@
     "@mui/material": "^5.16.4",
     "@types/axios": "^0.14.0",
     "@types/moment": "^2.13.0",
+    "@types/react-highlight-words": "^0.20.0",
     "antd": "^5.19.3",
     "axios": "^1.7.2",
     "dayjs": "^1.11.12",
     "moment": "^2.30.1",
     "next": "14.2.5",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-highlight-words": "^0.20.0"
   },
   "devDependencies": {
     "@types/node": "^20",

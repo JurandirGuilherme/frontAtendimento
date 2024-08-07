@@ -15,7 +15,7 @@ const formTailLayout = {
 
 const Formulario: React.FC = () => {
   const [form] = Form.useForm();
-  const { messageApi } = useContext(LoadingContext);
+  const {setIsLoading, messageApi } = useContext(LoadingContext);
   const [entrega, setEntrega] = useState<number>(1);
 
 
@@ -29,6 +29,7 @@ const Formulario: React.FC = () => {
     try {
       const values = await form.validateFields();
       console.log("Success:", values);
+      setIsLoading(true)
       api
         .post(
           "/pedido",
@@ -51,6 +52,9 @@ const Formulario: React.FC = () => {
         .catch((error) => {
           console.log(error);
           messageApi.error(error.response.data.msg)
+        })
+        .finally(()=>{
+          setIsLoading(false)
         });
     } catch (errorInfo) {
       console.log("Failed:", errorInfo);

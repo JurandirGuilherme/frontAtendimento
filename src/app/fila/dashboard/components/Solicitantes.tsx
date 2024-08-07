@@ -4,13 +4,14 @@ import Atendimento from "@/app/atendimento/page";
 import { api } from "@/app/api";
 import { Table, TableProps } from "antd";
 import { DateContext } from "../dateContext";
+import { LoadingContext } from "@/app/LoadingContext";
 
 interface DataType {
   nome: string;
-  total: number
-  preferencial: number
-  geral: number
-  prioridade: number
+  total: number;
+  preferencial: number;
+  geral: number;
+  prioridade: number;
 }
 
 const columns: TableProps<DataType>["columns"] = [
@@ -24,71 +25,72 @@ const columns: TableProps<DataType>["columns"] = [
     title: "Geral",
     dataIndex: "geral",
     sorter: (a, b) => a.geral - b.geral,
-    
   },
   {
     key: "preferencial",
     title: "Preferencial",
     dataIndex: "preferencial",
     sorter: (a, b) => a.preferencial - b.preferencial,
-    
   },
   {
     key: "prioridade",
     title: "Prioridade",
     dataIndex: "prioridade",
     sorter: (a, b) => a.prioridade - b.prioridade,
-    
   },
   {
     key: "total",
     title: "Total",
     dataIndex: "total",
     sorter: (a, b) => a.total - b.total,
-    defaultSortOrder:'descend'
-  }
+    defaultSortOrder: "descend",
+  },
 ];
 
 function Solicitantes() {
   const [dataApi, setDataApi] = useState([]);
-  
-  const {startDate, endDate} = useContext(DateContext);
-  useEffect(()=>{
-      api.post('/user/solicitantes',{
-          'inicioDt': startDate,
-          'fimDt': endDate
-      }).then(({data})=>{
-        setDataApi(data)
-      }).catch((error)=>{
-          console.log(error)
+
+  const { startDate, endDate } = useContext(DateContext);
+  const { setIsLoading} = useContext(LoadingContext);
+
+  useEffect(() => {
+    setIsLoading(true);
+    api
+      .post("/user/solicitantes", {
+        inicioDt: startDate,
+        fimDt: endDate,
       })
-  },[endDate])
+      .then(({ data }) => {
+        setDataApi(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [endDate]);
 
-  // useEffect(() => {
-  //   api
-  //     .get("/user/solicitantes")
-  //     .then(({ data }) => {
-  //       setDataApi(data);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // }, []);
-
-  const data = dataApi.map(({ nome, total, preferencial, geral, id, prioridade }) => {
-    return {
-      key: id,
-      nome,
-      preferencial,
-      geral,
-      total,
-      prioridade
-    };
-  });
+  const data = dataApi.map(
+    ({ nome, total, preferencial, geral, id, prioridade }) => {
+      return {
+        key: id,
+        nome,
+        preferencial,
+        geral,
+        total,
+        prioridade,
+      };
+    }
+  );
 
   return (
     <>
-      <Table columns={columns} pagination={{position: ["bottomCenter"]}} dataSource={data}></Table>
+      <Table
+        columns={columns}
+        pagination={{ position: ["bottomCenter"] }}
+        dataSource={data}
+      ></Table>
     </>
   );
 }

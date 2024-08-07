@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { api } from "@/app/api";
 import { Table, TableProps } from "antd";
 import { DateContext } from "../dateContext";
+import { LoadingContext } from "@/app/LoadingContext";
 
 interface DataType {
   nome: string;
@@ -49,10 +50,13 @@ const columns: TableProps<DataType>["columns"] = [
 ];
 
 function Atendentes() {
+  const { setIsLoading, messageApi } = useContext(LoadingContext);
+
   const [dataApi, setDataApi] = useState([]);
   
   const {startDate, endDate} = useContext(DateContext);
   useEffect(()=>{
+    setIsLoading(true)
       api.post('/user/atendimentos',{
           'inicioDt': startDate,
           'fimDt': endDate
@@ -60,6 +64,9 @@ function Atendentes() {
         setDataApi(data)
       }).catch((error)=>{
           console.log(error)
+      })
+      .finally(()=>{
+        setIsLoading(false)
       })
   },[endDate])
 

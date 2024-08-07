@@ -9,7 +9,6 @@ import { DateContext } from "./dateContext";
 import dayjs from "dayjs";
 
 function Dashboard() {
-  const { RangePicker } = DatePicker;
   const { startDate, setStartDate, endDate, setEndDate } =
     useContext(DateContext);
 
@@ -19,7 +18,7 @@ function Dashboard() {
         <div className=" flex  flex-col justify-center items-center space-y-2">
           <DatePicker.RangePicker
             key={1}
-            format={'YYYY/MM/DD'}
+            format={'DD/MM/YYYY'}
             onChange={(e) => {
               let data = new Date(e?.[1])
               let dia = data.getDate()

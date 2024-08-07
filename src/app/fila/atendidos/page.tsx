@@ -1,3 +1,4 @@
+'use client'
 import AtendidosHoje from '@/app/fila/components/AtendidosHoje'
 import React from 'react'
 

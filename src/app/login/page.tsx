@@ -4,6 +4,7 @@ import styles from "./styles.module.css";
 import { api } from "../api";
 import { useRouter } from "next/navigation";
 import { LoadingContext } from "../LoadingContext";
+import { ApiContext } from "../ApiContext";
 
 function Login() {
   const [usuario, setUsuario] = useState("");

@@ -19,16 +19,13 @@ const Formulario: React.FC = () => {
   const [prioridadelei, setPrioridadelei] = useState(false);
 
   const [novaCin, setNovaCin] = useState(false);
-  const [cargo, setCargo] = useState(0);
+  // const [cargo, setCargo] = useState(0);
+  const [cargo, setCargo] = useState<object[]>([])
 
   useEffect(() => {
-    const cargoss = sessionStorage.getItem("cargo");
-    setCargo(Number(cargoss));
+    // const cargoss = sessionStorage.getItem("cargo");
+    setCargo(JSON.parse(sessionStorage.getItem('cargo')!));
   }, []);
-
-  // useEffect(() => {
-  //   form.validateFields(['nome']);
-  // }, [preferencial, form]);
 
   const onCheckboxChange = (e: { target: { checked: boolean } }) => {
     setPreferencial(e.target.checked);
@@ -115,7 +112,7 @@ const Formulario: React.FC = () => {
               Prioridade Legal
             </Checkbox>
           </Form.Item>
-        {cargo == 1 && (
+        {cargo.some(e => e.id==1) && (
           <Form.Item>
             <Checkbox checked={preferencial} onChange={onCheckboxChange}>
               Preferencial

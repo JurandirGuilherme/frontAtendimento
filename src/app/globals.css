@@ -2,19 +2,62 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @layer antd {
+  
+  .ant-checkbox-checked .ant-checkbox-inner {
+    background-color: #821a1a !important;
+    border-color: #821a1a !important;
+}
+  .ant-dropdown-menu .ant-dropdown-menu-item-selected{
+    color: #821a1a !important;
+    background-color: #ffe6e6 !important;
+
+  }
+  .ant-table-filter-trigger.active {
+    color: #821a1a !important;
+  }
+  .ant-btn-link {
+    color: #821a1a !important;
+  }
+  .a.ant-dropdown-trigger a {
+    color: snow !important;
+  }
+  .ant-space-item:hover {
+    color: white !important;
+  }
+  .ant-btn-default:not(:disabled):not(.ant-btn-disabled):hover {
+    color: #821a1a !important;
+    border-color: #821a1a !important;
+    background: #ffffff;
+  }
+  .ant-btn-primary {
+    color: #fff;
+    background: #821a1a !important;
+    box-shadow: 0 2px 0 rgba(5, 145, 255, 0.1);
+  }
   .ant-layout-sider-trigger {
     background-color: #450a0a !important;
   }
-  .ant-menu-item-selected{
+  .ant-menu-item-selected {
     background-color: #821a1a !important;
   }
-  .ant-table-column-sorter-up.active{
+  .ant-table-column-sorter-up.active {
     color: #450a0a !important;
   }
-  .ant-table-column-sorter-down.active{
+  .ant-table-column-sorter-down.active {
     color: #450a0a !important;
+  }
+  .ant-input-outlined:focus-within {
+    border-color: #821a1a !important;
+    box-shadow: 0 0 0 2px rgba(5, 145, 255, 0.1);
+    outline: 0;
+    background-color: #ffffff;
+  }
+  .ant-input-outlined:hover {
+    border-color: #821a1a !important;
+    box-shadow: 0 0 0 2px rgba(5, 145, 255, 0.1);
+    outline: 0;
+    background-color: #ffffff;
   }
 }
 /* :global {
