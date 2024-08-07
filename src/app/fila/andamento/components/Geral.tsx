@@ -32,18 +32,41 @@ function Geral() {
   const { setIsLoading, messageApi } = useContext(LoadingContext);
 
   useEffect(() => {
-    // setTimeout(() => {
-    //   setRefresh(!refresh);
-    // }, 60000);
-    
     setIsLoading(true);
+    const fetchData = async (data: any) => {
+      let idNet = await Promise.all(
+        data.map(
+          async ({
+            numero,
+            entrega,
+            postoOrigem,
+            createdAt,
+            solicitante,
+            postoDestino,
+          }) =>
+            await api
+              .get(
+                `https://idnet.pe.gov.br/Montreal.IdNet.Comunicacao.WebApi/atendimento/consultar/${numero}`
+              )
+              .then(({ data }) => {
+                return { numero: data.numeroPedido, entrega, postoOrigem, createdAt, solicitante, postoDestino, atividadeAtual: data.atividadeAtual };
+              })
+              .catch((error) => {
+                console.log(error);
+              }).finally(()=>{
+                setIsLoading(false)
+              })
+        )
+      );
+      setPedido(idNet)
+    };
     api
       .post("/pedido/andamento", {
         inicioDt: startDate,
         fimDt: endDate,
       })
       .then(({ data }) => {
-        setPedido(data);
+        fetchData(data);
       })
       .catch((error) => {
         console.log(error);
@@ -51,7 +74,7 @@ function Geral() {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [refresh, endDate]);
+  }, []);
 
   const data = pedido.map(
     ({

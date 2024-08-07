@@ -34,15 +34,14 @@ function Geral() {
   const [pedido, setPedido] = useState([]);
   const { setIsLoading, messageApi } = useContext(LoadingContext);
 
-
-  const [searchText, setSearchText] = useState('');
-  const [searchedColumn, setSearchedColumn] = useState('');
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
 
   const handleSearch = (
     selectedKeys: string[],
-    confirm: FilterDropdownProps['confirm'],
-    dataIndex: DataIndex,
+    confirm: FilterDropdownProps["confirm"],
+    dataIndex: DataIndex
   ) => {
     confirm();
     setSearchText(selectedKeys[0]);
@@ -51,26 +50,43 @@ function Geral() {
 
   const handleReset = (clearFilters: () => void) => {
     clearFilters();
-    setSearchText('');
+    setSearchText("");
   };
 
   type DataIndex = keyof DataType;
 
-  const getColumnSearchProps = (dataIndex: DataIndex): TableColumnType<DataType> => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
-      <div className="flex flex-col w-56 p-3" onKeyDown={(e) => e.stopPropagation()}>
+  const getColumnSearchProps = (
+    dataIndex: DataIndex
+  ): TableColumnType<DataType> => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close,
+    }) => (
+      <div
+        className="flex flex-col w-56 p-3"
+        onKeyDown={(e) => e.stopPropagation()}
+      >
         <Input
           ref={searchInput}
           placeholder={`Pesquisar ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
-          style={{ marginBottom: 8, display: 'flex' }}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() =>
+            handleSearch(selectedKeys as string[], confirm, dataIndex)
+          }
+          style={{ marginBottom: 8, display: "flex" }}
         />
         <div className=" flex justify-between">
-           <Button
+          <Button
             type="primary"
-            onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+            onClick={() =>
+              handleSearch(selectedKeys as string[], confirm, dataIndex)
+            }
             icon={<SearchOutlined />}
             size="small"
             style={{ width: 90 }}
@@ -111,7 +127,7 @@ function Geral() {
       </div>
     ),
     filterIcon: (filtered: boolean) => (
-      <SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />
+      <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
     ),
     onFilter: (value, record) =>
       record[dataIndex]
@@ -126,24 +142,58 @@ function Geral() {
     render: (text) =>
       searchedColumn === dataIndex ? (
         <Highlighter
-          highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+          highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
           searchWords={[searchText]}
           autoEscape
-          textToHighlight={text ? text.toString() : ''}
+          textToHighlight={text ? text.toString() : ""}
         />
       ) : (
         text
       ),
   });
 
-
-
-
   useEffect(() => {
-    // setTimeout(() => {
-    //   setRefresh(!refresh);
-    // }, 60000);
-    
+    const fetchData = async (data: any) => {
+      let idNet = await Promise.all(
+        data.map(
+          async ({
+            numero,
+            entrega,
+            postoOrigem,
+            createdAt,
+            solicitante,
+            postoDestino,
+            operador,
+            dtImpressao,
+          }) =>
+            await api
+              .get(
+                `https://idnet.pe.gov.br/Montreal.IdNet.Comunicacao.WebApi/atendimento/consultar/${numero}`
+              )
+              .then(({ data }) => {
+                return {
+                  numero: data.numeroPedido,
+                  entrega,
+                  postoOrigem,
+                  createdAt,
+                  solicitante,
+                  postoDestino,
+                  atividadeAtual: data.atividadeAtual,
+                  operador,
+                  dtImpressao,
+                };
+              })
+              .catch((error) => {
+                console.log(error);
+              })
+              .finally(() => {
+                setIsLoading(false);
+              })
+        )
+      );
+      setPedido(idNet);
+    };
+
     setIsLoading(true);
     api
       .post("/pedido/impressos", {
@@ -151,7 +201,7 @@ function Geral() {
         fimDt: endDate,
       })
       .then(({ data }) => {
-        setPedido(data);
+        fetchData(data);
       })
       .catch((error) => {
         console.log(error);
@@ -171,7 +221,7 @@ function Geral() {
       postoDestino,
       atividadeAtual,
       operador,
-      dtImpressao
+      dtImpressao,
     }) => {
       return {
         key: numero,
@@ -186,8 +236,8 @@ function Geral() {
         atividadeAtual,
         operador: operador.nome,
         dtImpressao: moment(dtImpressao)
-        .locale("pt-br")
-        .format("DD/MM/YYYY hh:mm:ss A")
+          .locale("pt-br")
+          .format("DD/MM/YYYY hh:mm:ss A"),
       };
     }
   );
@@ -198,20 +248,19 @@ function Geral() {
       title: "Pedido",
       dataIndex: "numero",
       key: "numero",
-      ...getColumnSearchProps('numero')
+      ...getColumnSearchProps("numero"),
     },
     {
       title: "Posto Origem",
       dataIndex: "postoOrigem",
       key: "postoOrigem",
-      ...getColumnSearchProps('postoOrigem')
+      ...getColumnSearchProps("postoOrigem"),
     },
     {
       title: "Posto Destino",
       dataIndex: "postoDestino",
       key: "postoDestino",
-      ...getColumnSearchProps('postoDestino')
-
+      ...getColumnSearchProps("postoDestino"),
     },
     {
       title: "Entrega",
@@ -219,25 +268,26 @@ function Geral() {
       key: "entrega",
       filters: [
         {
-          text: 'Posto Destino',
-          value: 'Posto Destino',
+          text: "Posto Destino",
+          value: "Posto Destino",
         },
         {
-          text: 'Gabinete',
-          value: 'Gabinete',
+          text: "Gabinete",
+          value: "Gabinete",
         },
         {
-          text: 'Permanência',
-          value: 'Permanência',
-        }
+          text: "Permanência",
+          value: "Permanência",
+        },
       ],
-      onFilter: (value, record) => record.entrega.indexOf(value as string) === 0
+      onFilter: (value, record) =>
+        record.entrega.indexOf(value as string) === 0,
     },
     {
       title: "Solicitante",
       dataIndex: "solicitante",
       key: "solicitante",
-      ...getColumnSearchProps('solicitante')
+      ...getColumnSearchProps("solicitante"),
     },
     {
       title: "Inserção",
@@ -248,7 +298,7 @@ function Geral() {
       title: "Operador",
       dataIndex: "operador",
       key: "Operador",
-      ...getColumnSearchProps('operador')
+      ...getColumnSearchProps("operador"),
     },
     {
       title: "Data de Finalização",
@@ -278,11 +328,6 @@ function Geral() {
       },
     },
   ];
-
-
-
-
- 
 
   return (
     <div className="space-y-3">
