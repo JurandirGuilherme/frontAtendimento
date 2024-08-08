@@ -161,6 +161,8 @@ function Geral() {
       title: "Inserção",
       dataIndex: "createdAt",
       key: "createdAt",
+      sorter: (a,b) => moment(a.createdAt).unix() - moment(b.createdAt).unix(),
+      defaultSortOrder:"ascend",
     },
     {
       title: "CIN",

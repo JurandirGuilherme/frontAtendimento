@@ -84,16 +84,23 @@ const App = ({
       return e.id == 4;
     })
   ) {
-    items.push({
-      key: "6",
-      label: <Link href={"/fila/prioridade"}>Prioridade</Link>,
-      icon: <PrinterOutlined />,
-    },
-    {
-      key: "9",
-      label: <Link href={"/fila/historico"}>Histórico</Link>,
-      icon: <PrinterOutlined />,
-    });
+    items.push(
+      {
+        key: "7",
+        label: <Link href={"/fila/andamento"}>Andamento</Link>,
+        icon: <PrinterOutlined />,
+      },
+      {
+        key: "6",
+        label: <Link href={"/fila/prioridade"}>Prioridade</Link>,
+        icon: <PrinterOutlined />,
+      },
+      {
+        key: "9",
+        label: <Link href={"/fila/historico"}>Histórico</Link>,
+        icon: <PrinterOutlined />,
+      }
+    );
   }
 
   // useEffect(() => {

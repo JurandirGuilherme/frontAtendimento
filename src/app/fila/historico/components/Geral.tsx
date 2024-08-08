@@ -101,29 +101,6 @@ function Geral() {
             Limpar
           </Button>
         </div>
-        {/* <Space>
-         
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              confirm({ closeDropdown: false });
-              setSearchText((selectedKeys as string[])[0]);
-              setSearchedColumn(dataIndex);
-            }}
-          >
-            Filter
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              close();
-            }}
-          >
-            close
-          </Button>
-        </Space> */}
       </div>
     ),
     filterIcon: (filtered: boolean) => (
@@ -154,7 +131,7 @@ function Geral() {
 
   useEffect(() => {
     const fetchData = async (data: any) => {
-      let idNet = await Promise.all(
+      await Promise.all(
         data.map(
           async ({
             numero,
@@ -186,29 +163,30 @@ function Geral() {
               .catch((error) => {
                 console.log(error);
               })
-              .finally(() => {
-                setIsLoading(false);
-              })
         )
-      );
-      setPedido(idNet);
+      )
+        .then((idNet) => {
+          setPedido(idNet);
+        })
+        .catch((error) => {
+          console.log(error);
+        })
     };
 
-    setIsLoading(true);
     api
       .post("/pedido/impressos", {
         inicioDt: startDate,
         fimDt: endDate,
       })
       .then(({ data }) => {
-        fetchData(data);
+        setIsLoading(true)
+        fetchData(data).finally(()=>{
+          setIsLoading(false)
+        });
       })
       .catch((error) => {
         console.log(error);
       })
-      .finally(() => {
-        setIsLoading(false);
-      });
   }, [refresh, endDate]);
 
   const data = pedido.map(
@@ -242,7 +220,7 @@ function Geral() {
     }
   );
 
-  const [filteredInfo, setFilteredInfo] = useState<Filters>({});
+  // const [filteredInfo, setFilteredInfo] = useState<Filters>({});
   const columns: TableProps<DataType>["columns"] = [
     {
       title: "Pedido",
@@ -293,6 +271,8 @@ function Geral() {
       title: "Inserção",
       dataIndex: "createdAt",
       key: "createdAt",
+      sorter: (a,b) => moment(a.createdAt).unix() - moment(b.createdAt).unix(),
+
     },
     {
       title: "Operador",
@@ -304,6 +284,9 @@ function Geral() {
       title: "Data de Finalização",
       dataIndex: "dtImpressao",
       key: "dtImpressao",
+      sorter: (a,b) => moment(a.dtImpressao).unix() - moment(b.dtImpressao).unix(),
+      defaultSortOrder: 'descend'
+
     },
     {
       title: "Atividade Atual",

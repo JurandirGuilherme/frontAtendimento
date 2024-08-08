@@ -32,9 +32,8 @@ function Geral() {
   const { setIsLoading, messageApi } = useContext(LoadingContext);
 
   useEffect(() => {
-    setIsLoading(true);
     const fetchData = async (data: any) => {
-      let idNet = await Promise.all(
+      await Promise.all(
         data.map(
           async ({
             numero,
@@ -49,16 +48,27 @@ function Geral() {
                 `https://idnet.pe.gov.br/Montreal.IdNet.Comunicacao.WebApi/atendimento/consultar/${numero}`
               )
               .then(({ data }) => {
-                return { numero: data.numeroPedido, entrega, postoOrigem, createdAt, solicitante, postoDestino, atividadeAtual: data.atividadeAtual };
+                return {
+                  numero: data.numeroPedido,
+                  entrega,
+                  postoOrigem,
+                  createdAt,
+                  solicitante,
+                  postoDestino,
+                  atividadeAtual: data.atividadeAtual,
+                };
               })
               .catch((error) => {
                 console.log(error);
-              }).finally(()=>{
-                setIsLoading(false)
               })
         )
-      );
-      setPedido(idNet)
+      )
+        .then((idNet) => {
+          setPedido(idNet);
+        })
+        .catch(() => {
+          console.log("deu error");
+        })
     };
     api
       .post("/pedido/andamento", {
@@ -66,15 +76,16 @@ function Geral() {
         fimDt: endDate,
       })
       .then(({ data }) => {
-        fetchData(data);
+        setIsLoading(true);
+        fetchData(data)
+        .finally(() => {
+          setIsLoading(false);
+        });
       })
       .catch((error) => {
         console.log(error);
       })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }, []);
+  }, [endDate, refresh]);
 
   const data = pedido.map(
     ({
@@ -131,6 +142,8 @@ function Geral() {
       title: "Inserção",
       dataIndex: "createdAt",
       key: "createdAt",
+      sorter: (a,b) => moment(a.createdAt).unix() - moment(b.createdAt).unix(),
+      defaultSortOrder: "descend"
     },
     {
       title: "Atividade Atual",
