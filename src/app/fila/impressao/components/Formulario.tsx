@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Button, Checkbox, Form, Input, Select } from "antd";
 import { api } from "@/app/api";
 import { LoadingContext } from "@/app/LoadingContext";
+import { Modal, Tag } from "antd";
 
 const formItemLayout = {
   labelCol: { span: 4 },
@@ -15,27 +16,25 @@ const formTailLayout = {
 
 const Formulario: React.FC = () => {
   const [form] = Form.useForm();
-  const {setIsLoading, messageApi } = useContext(LoadingContext);
+  const { setIsLoading, messageApi } = useContext(LoadingContext);
   const [entrega, setEntrega] = useState<number>(1);
-
 
   useEffect(() => {
     const cargoss = sessionStorage.getItem("cargo");
   }, []);
-
 
   const onCheck = async () => {
     const token = sessionStorage.getItem("token");
     try {
       const values = await form.validateFields();
       console.log("Success:", values);
-      setIsLoading(true)
+      setIsLoading(true);
       api
         .post(
           "/pedido",
           {
             pedido: values.pedido,
-            entrega: entrega
+            entrega: entrega,
           },
           {
             headers: {
@@ -46,15 +45,65 @@ const Formulario: React.FC = () => {
         .then((data) => {
           messageApi.success("Requerente enviado para fila.");
           form.resetFields();
-         
+
           console.log(data);
         })
-        .catch((error) => {
-          console.log(error);
-          messageApi.error(error.response.data.msg)
+        .catch(({ response }) => {
+          console.log(response);
+          const idNet = response.data
+          Modal.error({
+            title: <h1 className="text-xl"> {idNet.msg}.</h1>,
+            width:600,
+            // styles:{content:{width:'}},
+            content: (
+              <>
+                <div className="text-lg space-y-0.5 flex flex-col">
+                  <div className="flex space-x-2">
+                    <p>Requerente:</p>{" "}
+                    <h3>{idNet.nome}</h3>
+                  </div>
+                  <div className="flex space-x-2">
+                    <p>Atividade do Pedido:</p>{" "}
+                    <Tag color="processing"><h3 className="text-sm" >{String(idNet.atividadeAtual).toUpperCase()}</h3></Tag>
+                  </div>
+                  <div className="flex space-x-2">
+                    <p>Posto Origem:</p>{" "}
+                    <h3>{idNet.nomePostoOrigem}</h3>
+                  </div>
+                  <div className="flex space-x-2">
+                    <p>Posto Destino:</p>{" "}
+                    <h3>{idNet.nomePostoDestino}</h3>
+                  </div>
+                  {!idNet.inPago && idNet.inPagtoTaxa ? 
+                  <>
+                  <div className="flex space-x-2">
+                    <p>DAE:</p>{" "}
+                    <Tag color="volcano"> <h1 className="text-sm">NÃO PAGO</h1></Tag>
+                  </div>
+                  </> 
+                  : 
+                  idNet.inPago ? 
+                  <>
+                  <div className="flex space-x-2">
+                    <p>DAE:</p>{" "}
+                    <Tag color="green"><h1 className="text-sm">PAGO</h1></Tag>
+                  </div>
+                  </>
+                  :
+                  <div className="flex space-x-2">
+                  <p>DAE:</p>{" "}
+                  <Tag color="geekblue"><h1 className="text-sm">ISENTO</h1></Tag>
+                </div>
+                  }
+
+                </div>
+              </>
+            ),
+          });
+          // messageApi.error(error.response.data.msg)
         })
-        .finally(()=>{
-          setIsLoading(false)
+        .finally(() => {
+          setIsLoading(false);
         });
     } catch (errorInfo) {
       console.log("Failed:", errorInfo);
@@ -76,18 +125,17 @@ const Formulario: React.FC = () => {
         <Form.Item
           name="pedido"
           label="Pedido"
-          rules={[
-            { required: true, message: "Nº do Pedido obrigatório." },
-          ]}
+          rules={[{ required: true, message: "Nº do Pedido obrigatório." }]}
         >
-          <Input placeholder="Nº do Pedido"  type="number" />
+          <Input placeholder="Nº do Pedido" type="number" />
         </Form.Item>
 
-   
-        <Form.Item name="entrega" label="Entrega" >
+        <Form.Item name="entrega" label="Entrega">
           <Select
             defaultValue={entrega}
-            onChange={(value)=>{setEntrega(value)}}
+            onChange={(value) => {
+              setEntrega(value);
+            }}
             options={[
               { value: 1, label: "Posto Destino" },
               { value: 2, label: "Permanência" },

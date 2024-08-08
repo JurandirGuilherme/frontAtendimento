@@ -37,24 +37,67 @@ function Geral() {
     setIsModalOpen(false);
   };
 
+  const fetchData = async (data: any) => {
+    await Promise.all(
+      data.map(
+        async ({
+          numero,
+          entrega,
+          postoOrigem,
+          createdAt,
+          solicitante,
+          postoDestino,
+          cin,
+        }) =>
+          await api
+            .get(
+              `https://idnet.pe.gov.br/Montreal.IdNet.Comunicacao.WebApi/atendimento/consultar/${numero}`
+            )
+            .then(({ data }) => {
+              return {
+                numero: data.numeroPedido,
+                entrega,
+                postoOrigem,
+                createdAt,
+                solicitante,
+                postoDestino,
+                atividadeAtual: data.atividadeAtual,
+                cin
+              };
+            })
+            .catch((error) => {
+              console.log(error);
+            })
+      )
+    )
+      .then((idNet) => {
+        setPedido(idNet);
+      })
+      .catch(() => {
+        console.log("deu error");
+      })
+  };
   useEffect(() => {
     // setTimeout((()=>{setRefresh(!refresh)}), 60000)
-    setIsLoading(true);
+
+
+
     api
       .get("/pedido/emfila")
       .then(({ data }) => {
-        setPedido(data);
+        setIsLoading(true);
+        fetchData(data)
+        .finally(() => {
+          setIsLoading(false);
+        });
       })
       .catch((error) => {
         console.log(error);
       })
-      .finally(() => {
-        setIsLoading(false);
-      });
+   
   }, [refresh]);
 
   const handleFinalizar = async (numero: number) => {
-    setIsLoading(true)
     api
       .put(
         "/pedido/impresso",
@@ -68,12 +111,14 @@ function Geral() {
         }
       )
       .then(({data})=>{
-        setPedido(data)
+        setIsLoading(true);
+        fetchData(data)
+        .finally(() => {
+          setIsLoading(false);
+        });
       })
       .catch((error) => {
         console.log(error);
-      }).finally(async ()=>{
-        setIsLoading(false)
       })
   };
 
@@ -83,12 +128,9 @@ function Geral() {
   const handleConsultarIdNet = (pedido: number) => {
     setIsLoading(true);
     api
-      .post("/pedido/consultar", {
-        pedido: pedido,
-      })
+      .get(`https://idnet.pe.gov.br/Montreal.IdNet.Comunicacao.WebApi/atendimento/consultar/${pedido}`)
       .then(({ data }) => {
         showModal();
-        console.log(data);
         setIdNet(data);
       })
       .catch((error) => {
@@ -147,11 +189,7 @@ function Geral() {
       dataIndex: "entrega",
       key: "entrega",
     },
-    // {
-    //   title: "Atividade Atual",
-    //   dataIndex: "atividadeAtual",
-    //   key: "atividadeAtual",
-    // },
+   
     {
       title: "Solicitante",
       dataIndex: "solicitante",
@@ -183,6 +221,28 @@ function Geral() {
       }
     },
     {
+      title: "Atividade Atual",
+      dataIndex: "atividadeAtual",
+      key: "atividadeAtual",
+      render: (_, { atividadeAtual }) => {
+        let color = "geekblue";
+
+        switch (atividadeAtual) {
+          case "Geração de carteira de identidade":
+            color = "orange";
+            break;
+          case "Entrega de Carteira":
+            color = "green";
+            break;
+        }
+        return (
+          <>
+            <Tag color={color}>{atividadeAtual}</Tag>
+          </>
+        );
+      },
+    },
+    {
       title: "Ação",
       key: "action",
       render: (_, record) => {
@@ -202,7 +262,7 @@ function Geral() {
               }}
               className="bg-orange-400 text-white p-1 rounded-md shadow shadow-md"
             >
-              Ver Status
+              Ver Detalhes
             </button>
           </Space>
         );
