@@ -98,6 +98,8 @@ function Geral() {
   }, [refresh]);
 
   const handleFinalizar = async (numero: number) => {
+    setIsLoading(true)
+
     api
       .put(
         "/pedido/impresso",
@@ -118,7 +120,11 @@ function Geral() {
         });
       })
       .catch((error) => {
-        console.log(error);
+        messageApi.error(error.response.data.msg);
+        // messageApi(error.response.msg)
+      })
+      .finally(()=>{
+        setIsLoading(false)
       })
   };
 

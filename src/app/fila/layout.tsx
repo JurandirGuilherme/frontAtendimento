@@ -86,7 +86,7 @@ const App = ({
   ) {
     items.push(
       {
-        key: "7",
+        key: "8",
         label: <Link href={"/fila/andamento"}>Andamento</Link>,
         icon: <PrinterOutlined />,
       },
