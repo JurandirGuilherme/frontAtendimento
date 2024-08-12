@@ -3,6 +3,14 @@
 @tailwind utilities;
 
 @layer antd {
+
+  .ant-table-wrapper .ant-table-tbody .ant-table-row.ant-table-row-selected >.ant-table-cell{
+    background: #ffe6e6 !important;
+  }
+  .ant-table-wrapper .ant-table-tbody .ant-table-row.ant-table-row-selected >.ant-table-cell-row-hover{
+    background: #ffbaba !important;
+  }
+  
   
   .ant-checkbox-checked .ant-checkbox-inner {
     background-color: #821a1a !important;

@@ -7,6 +7,8 @@ import moment from "moment";
 import "moment/dist/locale/pt-br";
 import { Button } from "antd";
 import { LoadingContext } from "@/app/LoadingContext";
+import clsx from "clsx";
+import axios from "axios";
 
 interface DataType {
   key: number;
@@ -19,6 +21,8 @@ interface DataType {
 function Geral() {
   const [refresh, setRefresh] = useState<boolean>(false);
   const [refreshH, setRefreshH] = useState<boolean>(false);
+
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
   const { setIsLoading, messageApi } = useContext(LoadingContext);
   const [pedido, setPedido] = useState([]);
@@ -62,7 +66,7 @@ function Geral() {
                 solicitante,
                 postoDestino,
                 atividadeAtual: data.atividadeAtual,
-                cin
+                cin,
               };
             })
             .catch((error) => {
@@ -75,31 +79,26 @@ function Geral() {
       })
       .catch(() => {
         console.log("deu error");
-      })
+      });
   };
   useEffect(() => {
     // setTimeout((()=>{setRefresh(!refresh)}), 60000)
-
-
 
     api
       .get("/pedido/emfila")
       .then(({ data }) => {
         setIsLoading(true);
-        fetchData(data)
-        .finally(() => {
+        fetchData(data).finally(() => {
           setIsLoading(false);
         });
       })
       .catch((error) => {
         console.log(error);
-      })
-   
+      });
   }, [refresh]);
 
   const handleFinalizar = async (numero: number) => {
-    setIsLoading(true)
-
+    setIsLoading(true);
     api
       .put(
         "/pedido/impresso",
@@ -112,10 +111,9 @@ function Geral() {
           },
         }
       )
-      .then(({data})=>{
+      .then(({ data }) => {
         setIsLoading(true);
-        fetchData(data)
-        .finally(() => {
+        fetchData(data).finally(() => {
           setIsLoading(false);
         });
       })
@@ -123,18 +121,20 @@ function Geral() {
         messageApi.error(error.response.data.msg);
         // messageApi(error.response.msg)
       })
-      .finally(()=>{
-        setIsLoading(false)
-      })
+      .finally(() => {
+        setIsLoading(false);
+        setSelectedRowKeys([]);
+      });
   };
-
 
   const [idNet, setIdNet] = useState({});
 
   const handleConsultarIdNet = (pedido: number) => {
     setIsLoading(true);
     api
-      .get(`https://idnet.pe.gov.br/Montreal.IdNet.Comunicacao.WebApi/atendimento/consultar/${pedido}`)
+      .get(
+        `https://idnet.pe.gov.br/Montreal.IdNet.Comunicacao.WebApi/atendimento/consultar/${pedido}`
+      )
       .then(({ data }) => {
         showModal();
         setIdNet(data);
@@ -156,7 +156,7 @@ function Geral() {
       solicitante,
       postoDestino,
       atividadeAtual,
-      cin
+      cin,
     }) => {
       return {
         key: numero,
@@ -169,7 +169,7 @@ function Geral() {
         solicitante: solicitante!.nome,
         postoDestino,
         atividadeAtual,
-        cin
+        cin,
       };
     }
   );
@@ -195,7 +195,7 @@ function Geral() {
       dataIndex: "entrega",
       key: "entrega",
     },
-   
+
     {
       title: "Solicitante",
       dataIndex: "solicitante",
@@ -205,26 +205,23 @@ function Geral() {
       title: "Inserção",
       dataIndex: "createdAt",
       key: "createdAt",
-      sorter: (a,b) => moment(a.createdAt).unix() - moment(b.createdAt).unix(),
-      defaultSortOrder:"ascend",
+      sorter: (a, b) => moment(a.createdAt).unix() - moment(b.createdAt).unix(),
+      defaultSortOrder: "ascend",
     },
     {
       title: "CIN",
       dataIndex: "cin",
       key: "cin",
-      render: (_, {cin}) =>{
-        if (cin){ 
-          return (<>
-          <Tag color="green">
-          CIN
-          </Tag>
-          </>)
+      render: (_, { cin }) => {
+        if (cin) {
+          return (
+            <>
+              <Tag color="green">CIN</Tag>
+            </>
+          );
         }
-        return(
-        <>
-        </>
-        )
-      }
+        return <></>;
+      },
     },
     {
       title: "Atividade Atual",
@@ -275,7 +272,44 @@ function Geral() {
       },
     },
   ];
+  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    // console.log('selectedRowKeys changed: ', newSelectedRowKeys);
+    // newSelectedRowKeys.map((data)=>{
+    //   console.log(data)
+    // })
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
 
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+  const handleFinalizarSelect = async () => {
+    setIsLoading(true);
+    await Promise.all(
+      selectedRowKeys.map(async (numero) => {
+        await api
+          .put(
+            "/pedido/impresso",
+            {
+              pedido: numero,
+            },
+            {
+              headers: {
+                Authorization: sessionStorage.getItem("token"),
+              },
+            }
+          )
+          .catch((error) => {
+            messageApi.error(`Não foi possível finalizar o pedido: ${numero}, tente novamente. ` + error.response.data.msg )
+          });
+      })
+    ).finally(() => {
+      setSelectedRowKeys([]);
+      setRefresh(!refresh);
+      setIsLoading(false);
+    });
+  };
   return (
     <div className="space-y-3">
       <Modal
@@ -302,14 +336,27 @@ function Geral() {
           </span>
         </div>
       </Modal>
-      <Button
-        onClick={() => {
-          setRefresh(!refresh);
-        }}
-      >
-        Atualizar
-      </Button>
-      <Table columns={columns} dataSource={data} />
+      <div className="flex justify-between">
+        <div className="flex items-center space-x-3 ">
+          <Button
+            onClick={() => {
+              setRefresh(!refresh);
+            }}
+          >
+            Atualizar
+          </Button>
+          {selectedRowKeys.length > 0 && (
+            <p>Pedidos selecionados: {selectedRowKeys.length}</p>
+          )}
+        </div>
+        <Button
+          disabled={selectedRowKeys.length == 0 ? true : false}
+          onClick={handleFinalizarSelect}
+        >
+          Finalizar
+        </Button>
+      </div>
+      <Table columns={columns} rowSelection={rowSelection} dataSource={data} />
     </div>
   );
 }
