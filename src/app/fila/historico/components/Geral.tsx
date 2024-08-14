@@ -18,6 +18,10 @@ interface DataType {
   entrega: string;
   postoOrigem: string;
   solicitante: string;
+  dtImpressao: string;
+  dtImpressaoSort: string;
+  createdAt: string;
+  operador: string;
 }
 
 function Geral() {
@@ -216,6 +220,7 @@ function Geral() {
         dtImpressao: moment(dtImpressao)
           .locale("pt-br")
           .format("DD/MM/YYYY hh:mm:ss A"),
+        dtImpressaoSort: dtImpressao
       };
     }
   );
@@ -284,7 +289,7 @@ function Geral() {
       title: "Data de Finalização",
       dataIndex: "dtImpressao",
       key: "dtImpressao",
-      sorter: (a,b) => moment(a.dtImpressao).unix() - moment(b.dtImpressao).unix(),
+      sorter: (a,b) => moment(a.dtImpressaoSort).unix() - moment(b.dtImpressaoSort).unix(),
       defaultSortOrder: 'descend'
 
     },

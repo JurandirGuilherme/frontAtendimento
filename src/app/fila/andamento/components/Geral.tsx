@@ -108,6 +108,7 @@ function Geral() {
         solicitante: solicitante!.nome,
         postoDestino,
         atividadeAtual,
+        createdAtSort: createdAt
       };
     }
   );
@@ -142,7 +143,7 @@ function Geral() {
       title: "Inserção",
       dataIndex: "createdAt",
       key: "createdAt",
-      sorter: (a,b) => moment(a.createdAt).unix() - moment(b.createdAt).unix(),
+      sorter: (a,b) => moment(a.createdAtSort).unix() - moment(b.createdAtSort).unix(),
       defaultSortOrder: "descend"
     },
     {
