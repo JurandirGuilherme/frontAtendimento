@@ -1,6 +1,6 @@
 "use client";
 import React, { use, useContext, useEffect, useState } from "react";
-import { DatePicker, Space, Table, Tag } from "antd";
+import { DatePicker, Input, Modal, Space, Table, Tag } from "antd";
 import type { TableProps } from "antd";
 import { api } from "@/app/api";
 import moment from "moment";
@@ -42,6 +42,7 @@ function Geral() {
             createdAt,
             solicitante,
             postoDestino,
+            observacao
           }) =>
             await api
               .get(
@@ -56,6 +57,7 @@ function Geral() {
                   solicitante,
                   postoDestino,
                   atividadeAtual: data.atividadeAtual,
+                  observacao
                 };
               })
               .catch((error) => {
@@ -96,6 +98,7 @@ function Geral() {
       solicitante,
       postoDestino,
       atividadeAtual,
+      observacao
     }) => {
       return {
         key: numero,
@@ -108,7 +111,8 @@ function Geral() {
         solicitante: solicitante!.nome,
         postoDestino,
         atividadeAtual,
-        createdAtSort: createdAt
+        createdAtSort: createdAt,
+        observacao
       };
     }
   );
@@ -168,9 +172,102 @@ function Geral() {
         );
       },
     },
+    {
+      title: "Ação",
+      key: "action",
+      render: (_, record) => {
+        return (
+          <Space size="middle">
+            <button
+              onClick={() => {
+                handleConsultarIdNet(record.numero)
+                console.log(record)
+                setPedidoAtual(record)
+              }}
+              className="bg-orange-400 text-white p-1 rounded-md shadow shadow-md"
+            >
+              Ver Detalhes
+            </button>
+          </Space>
+        );
+      },
+    },
   ];
 
+
+      const [isModalOpen, setIsModalOpen] = useState(false);
+  
+    const showModal = () => {
+      setIsModalOpen(true);
+    };
+  
+    const handleOk = () => {
+      setIsModalOpen(false);
+    };
+  
+    const handleCancel = () => {
+      setIsModalOpen(false);
+    };
+    
+    const [pedidoAtual, setPedidoAtual] = useState({});
+    const [idNet, setIdNet] = useState({});
+  
+  
+    const handleConsultarIdNet = (pedido: number) => {
+        setIsLoading(true);
+        api
+          .get(
+            `https://idnet.pe.gov.br/Montreal.IdNet.Comunicacao.WebApi/atendimento/consultar/${pedido}`
+          )
+          .then(({ data }) => {
+            showModal();
+            setIdNet(data);
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+          .finally(() => {
+            setIsLoading(false);
+          });
+      };
+    
+
   return (
+    <>
+     <Modal
+        title={"Status do Pedido: " + idNet.numeroPedido}
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <div className="flex flex-col space-y-0.5 py-3 text-sm">
+          <span className="flex space-x-2">
+            <p className="font-bold">Atividade Atual: </p>{" "}
+            <a> {idNet.atividadeAtual}</a>
+          </span>
+          <span className="flex space-x-2">
+            <p className="font-bold">Nome: </p> <a> {idNet.nome}</a>
+          </span>
+          <span className="flex space-x-2">
+            <p className="font-bold">Posto Origem: </p>{" "}
+            <a> {idNet.nomePostoOrigem}</a>
+          </span>
+          <span className="flex space-x-2">
+            <p className="font-bold">Posto Destino: </p>{" "}
+            <a> {idNet.nomePostoDestino}</a>
+          </span>
+          {
+            pedidoAtual.observacao && 
+            <>
+              <span className="flex space-x-2">
+              <p className="font-bold">Observação: </p>{" "}
+              <Input.TextArea disabled value={pedidoAtual.observacao}/>
+              </span>
+            </>
+          }
+           
+        </div>
+      </Modal>
     <div className="space-y-3">
       <div className=" flex  justify-between">
         <DatePicker.RangePicker
@@ -197,6 +294,7 @@ function Geral() {
       </div>
       <Table columns={columns} dataSource={data} />
     </div>
+    </>
   );
 }
 

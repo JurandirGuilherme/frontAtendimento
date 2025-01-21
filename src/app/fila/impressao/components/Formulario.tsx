@@ -35,6 +35,7 @@ const Formulario: React.FC = () => {
           {
             pedido: values.pedido,
             entrega: entrega,
+            observacao: values.observacao
           },
           {
             headers: {
@@ -45,7 +46,6 @@ const Formulario: React.FC = () => {
         .then((data) => {
           messageApi.success("Requerente enviado para fila.");
           form.resetFields();
-
           console.log(data);
         })
         .catch(({ response }) => {
@@ -54,7 +54,6 @@ const Formulario: React.FC = () => {
           Modal.error({
             title: <h1 className="text-xl"> {idNet.msg}.</h1>,
             width:600,
-            // styles:{content:{width:'}},
             content: (
               <>
                 <div className="text-lg space-y-0.5 flex flex-col">
@@ -130,12 +129,13 @@ const Formulario: React.FC = () => {
           <Input placeholder="Nº do Pedido" type="number" />
         </Form.Item>
 
-        <Form.Item name="entrega" label="Entrega">
+        <Form.Item name="entrega" label="Entrega" rules={[{required:true, message: "Destino de Entrega Obrigatório."}]}>
           <Select
-            defaultValue={entrega}
+            // defaultValue={entrega}
             onChange={(value) => {
               setEntrega(value);
             }}
+            placeholder='Selecione o destino'
             options={[
               { value: 1, label: "Posto Destino" },
               { value: 2, label: "Permanência" },
@@ -143,7 +143,13 @@ const Formulario: React.FC = () => {
             ]}
           />
         </Form.Item>
-
+        <Form.Item
+          name="observacao"
+          label="Observação"
+          rules={[{ required: false}]}
+        >
+          <Input.TextArea placeholder="Observação ou justificativa do pedido." />
+        </Form.Item>
         <Form.Item>
           <Button
             type="primary"

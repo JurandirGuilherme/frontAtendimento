@@ -56,6 +56,7 @@ function Geral() {
           solicitante,
           postoDestino,
           cin,
+          observacao
         }) =>
           await api
             .get(
@@ -71,6 +72,7 @@ function Geral() {
                 postoDestino,
                 atividadeAtual: data.atividadeAtual,
                 cin,
+                observacao
               };
             })
             .catch((error) => {
@@ -132,6 +134,7 @@ function Geral() {
   };
 
   const [idNet, setIdNet] = useState({});
+  const [pedidoAtual, setPedidoAtual] = useState({});
 
   const handleConsultarIdNet = (pedido: number) => {
     setIsLoading(true);
@@ -161,6 +164,7 @@ function Geral() {
       postoDestino,
       atividadeAtual,
       cin,
+      observacao
     }) => {
       return {
         key: numero,
@@ -175,6 +179,7 @@ function Geral() {
         postoDestino,
         atividadeAtual,
         cin,
+        observacao
       };
     }
   );
@@ -399,7 +404,8 @@ function Geral() {
             </button>
             <button
               onClick={() => {
-                handleConsultarIdNet(record.numero);
+                handleConsultarIdNet(record.numero)
+                setPedidoAtual(record)
               }}
               className="bg-orange-400 text-white p-1 rounded-md shadow shadow-md"
             >
@@ -472,6 +478,16 @@ function Geral() {
             <p className="font-bold">Posto Destino: </p>{" "}
             <a> {idNet.nomePostoDestino}</a>
           </span>
+          {
+            pedidoAtual.observacao && 
+            <>
+              <span className="flex space-x-2">
+              <p className="font-bold">Observação: </p>{" "}
+              <Input.TextArea disabled value={pedidoAtual.observacao}/>
+              </span>
+            </>
+          }
+           
         </div>
       </Modal>
       <div className="flex justify-between">

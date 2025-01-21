@@ -1,6 +1,6 @@
 "use client";
 import React, { use, useContext, useEffect, useRef, useState } from "react";
-import { DatePicker, Input, Space, Table, Tag } from "antd";
+import { DatePicker, Input, Modal, Space, Table, Tag } from "antd";
 import type { InputRef, TableColumnType, TableProps } from "antd";
 import { api } from "@/app/api";
 import moment from "moment";
@@ -25,6 +25,22 @@ interface DataType {
 }
 
 function Geral() {
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+  
+    const showModal = () => {
+      setIsModalOpen(true);
+    };
+  
+    const handleOk = () => {
+      setIsModalOpen(false);
+    };
+  
+    const handleCancel = () => {
+      setIsModalOpen(false);
+    };
+  
+
   let date = new Date();
   let dia = date.getDate();
   dia = date.setDate(dia + 1);
@@ -146,6 +162,7 @@ function Geral() {
             postoDestino,
             operador,
             dtImpressao,
+            observacao
           }) =>
             await api
               .get(
@@ -162,6 +179,7 @@ function Geral() {
                   atividadeAtual: data.atividadeAtual,
                   operador,
                   dtImpressao,
+                  observacao
                 };
               })
               .catch((error) => {
@@ -204,6 +222,7 @@ function Geral() {
       atividadeAtual,
       operador,
       dtImpressao,
+      observacao
     }) => {
       return {
         key: numero,
@@ -220,7 +239,8 @@ function Geral() {
         dtImpressao: moment(dtImpressao)
           .locale("pt-br")
           .format("DD/MM/YYYY hh:mm:ss A"),
-        dtImpressaoSort: dtImpressao
+        dtImpressaoSort: dtImpressao,
+        observacao
       };
     }
   );
@@ -315,9 +335,88 @@ function Geral() {
         );
       },
     },
+    {
+          title: "Ação",
+          key: "action",
+          render: (_, record) => {
+            return (
+              <Space size="middle">
+                <button
+                  onClick={() => {
+                    handleConsultarIdNet(record.numero)
+                    console.log(record)
+                    setPedidoAtual(record)
+                  }}
+                  className="bg-orange-400 text-white p-1 rounded-md shadow shadow-md"
+                >
+                  Ver Detalhes
+                </button>
+              </Space>
+            );
+          },
+        },
   ];
 
+  const [pedidoAtual, setPedidoAtual] = useState({});
+  const [idNet, setIdNet] = useState({});
+
+
+  const handleConsultarIdNet = (pedido: number) => {
+      setIsLoading(true);
+      api
+        .get(
+          `https://idnet.pe.gov.br/Montreal.IdNet.Comunicacao.WebApi/atendimento/consultar/${pedido}`
+        )
+        .then(({ data }) => {
+          showModal();
+          setIdNet(data);
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    };
+  
+
+  
   return (
+    <>
+    <Modal
+        title={"Status do Pedido: " + idNet.numeroPedido}
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <div className="flex flex-col space-y-0.5 py-3 text-sm">
+          <span className="flex space-x-2">
+            <p className="font-bold">Atividade Atual: </p>{" "}
+            <a> {idNet.atividadeAtual}</a>
+          </span>
+          <span className="flex space-x-2">
+            <p className="font-bold">Nome: </p> <a> {idNet.nome}</a>
+          </span>
+          <span className="flex space-x-2">
+            <p className="font-bold">Posto Origem: </p>{" "}
+            <a> {idNet.nomePostoOrigem}</a>
+          </span>
+          <span className="flex space-x-2">
+            <p className="font-bold">Posto Destino: </p>{" "}
+            <a> {idNet.nomePostoDestino}</a>
+          </span>
+          {
+            pedidoAtual.observacao && 
+            <>
+              <span className="flex space-x-2">
+              <p className="font-bold">Observação: </p>{" "}
+              <Input.TextArea disabled value={pedidoAtual.observacao}/>
+              </span>
+            </>
+          }
+           
+        </div>
+      </Modal>
     <div className="space-y-3">
       <div className=" flex  justify-between">
         <DatePicker.RangePicker
@@ -344,6 +443,7 @@ function Geral() {
       </div>
       <Table columns={columns} dataSource={data} />
     </div>
+    </>
   );
 }
 
