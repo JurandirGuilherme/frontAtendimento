@@ -111,14 +111,18 @@ const Formulario: React.FC = () => {
   };
 
   return (
-    <div className="bg-white w-fit p-10 rounded-md">
+    <div className="bg-white  w-[38em]  rounded-md">
       <Form
         form={form}
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
+        // style={{
+        //   display: "flex",
+        //   flexDirection: "column",
+        //   alignItems: "center",
+        // }}
+        layout="horizontal"
+        labelCol={{ span: 5 }}
+        // wrapperCol={{ span: 30 }}
+        className=" p-10 bg-white rounded-md"
         name="dynamic_rule"
       >
         <Form.Item
@@ -148,9 +152,9 @@ const Formulario: React.FC = () => {
           label="Observação"
           rules={[{ required: false}]}
         >
-          <Input.TextArea placeholder="Observação ou justificativa do pedido." />
+          <Input.TextArea className="w-74" placeholder="Observação ou justificativa do pedido." />
         </Form.Item>
-        <Form.Item>
+        <Form.Item className=" w-full flex justify-center p-2">
           <Button
             type="primary"
             style={{ backgroundColor: "rgb(127 29 29 / var(--tw-bg-opacity))" }}
