@@ -235,7 +235,7 @@ function Geral() {
         solicitante: solicitante!.nome,
         postoDestino,
         atividadeAtual,
-        operador: operador.nome,
+        // operador: operador.nome,
         dtImpressao: moment(dtImpressao)
           .locale("pt-br")
           .format("DD/MM/YYYY hh:mm:ss A"),

@@ -22,11 +22,33 @@ const Formulario: React.FC = () => {
   useEffect(() => {
     const cargoss = sessionStorage.getItem("cargo");
   }, []);
+  
+   async function checkCin (){
+    const values = await form.validateFields();
+     api.get(`https://idnet.pe.gov.br/Montreal.IdNet.Comunicacao.WebApi/atendimento/consultar/${values.pedido}`)
+     .then((data)=>{
+      if (!data.data.carteiraNacional) 
+        {
+         Modal.confirm({title: 'Pedido ESTADUAL, deseja continuar mesmo assim?', 
+          width:500,
+          onOk: onCheck,
+          okText: 'Continuar',
+          cancelText: 'Cancelar'
+         })
+         return;
+        }
+      onCheck();
+     }).catch(()=>{
+      onCheck();
+     })
+  }
 
+  
   const onCheck = async () => {
     const token = sessionStorage.getItem("token");
     try {
       const values = await form.validateFields();
+
       console.log("Success:", values);
       setIsLoading(true);
       api
@@ -158,7 +180,7 @@ const Formulario: React.FC = () => {
           <Button
             type="primary"
             style={{ backgroundColor: "rgb(127 29 29 / var(--tw-bg-opacity))" }}
-            onClick={onCheck}
+            onClick={checkCin}
           >
             Enviar
           </Button>
