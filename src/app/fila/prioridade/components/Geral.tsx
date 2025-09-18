@@ -154,7 +154,7 @@ function Geral() {
       });
   };
 
-  const data = pedido.map(
+  const data = pedido && pedido.map(
     ({
       numero,
       entrega,
